@@ -22,8 +22,7 @@ class GestureCatcher extends StatelessWidget {
             debugOwner: this,
             pointerKindsToCatch: pointerKindsToCatch,
           ),
-          (GestureCatcherRecognizer instance) {
-          },
+          (GestureCatcherRecognizer instance) {},
         )
       },
       child: child,
@@ -49,11 +48,15 @@ class GestureCatcherRecognizer extends OneSequenceGestureRecognizer {
   }) : super(debugOwner: debugOwner, supportedDevices: pointerKindsToCatch);
 
   @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
+  }
+
+  @override
   String get debugDescription => 'pan catcher';
 
   @override
-  void didStopTrackingLastPointer(int pointer) {
-  }
+  void didStopTrackingLastPointer(int pointer) {}
 
   @override
   void handleEvent(PointerEvent event) {
