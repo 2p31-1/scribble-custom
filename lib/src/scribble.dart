@@ -24,6 +24,9 @@ class Scribble extends StatefulWidget {
 
     /// Whether to draw the pointer when in erasing mode
     this.drawEraser = true,
+
+    /// Widget that will be drawn on top of the scribble
+    this.overlay = const SizedBox.shrink(),
     Key? key,
   }) : super(key: key);
 
@@ -35,6 +38,9 @@ class Scribble extends StatefulWidget {
 
   /// Whether to draw the pointer when in erasing mode
   final bool drawEraser;
+
+  /// Widget that will be drawn on top of the scribble
+  final Widget overlay;
 
   @override
   State<Scribble> createState() => _ScribbleState();
@@ -48,23 +54,28 @@ class _ScribbleState extends State<Scribble> {
       builder: (context, state, _) {
         final drawCurrentTool = widget.drawPen && state is Drawing ||
             widget.drawEraser && state is Erasing;
-        final child = SizedBox.expand(
-          child: CustomPaint(
-            foregroundPainter: ScribbleEditingPainter(
-              state: state,
-              drawPointer: widget.drawPen,
-              drawEraser: widget.drawEraser,
-            ),
-            child: RepaintBoundary(
-              key: widget.notifier.repaintBoundaryKey,
+        final child = Stack(
+          children: [
+            SizedBox.expand(
               child: CustomPaint(
-                painter: ScribblePainter(
-                  sketch: state.sketch,
-                  scaleFactor: state.scaleFactor,
+                foregroundPainter: ScribbleEditingPainter(
+                  state: state,
+                  drawPointer: widget.drawPen,
+                  drawEraser: widget.drawEraser,
+                ),
+                child: RepaintBoundary(
+                  key: widget.notifier.repaintBoundaryKey,
+                  child: CustomPaint(
+                    painter: ScribblePainter(
+                      sketch: state.sketch,
+                      scaleFactor: state.scaleFactor,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            widget.overlay,
+          ],
         );
         return !state.active
             ? child

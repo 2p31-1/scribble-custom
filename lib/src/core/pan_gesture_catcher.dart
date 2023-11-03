@@ -14,6 +14,7 @@ class GestureCatcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RawGestureDetector(
+      behavior: HitTestBehavior.translucent,
       key: ValueKey(pointerKindsToCatch),
       gestures: {
         GestureCatcherRecognizer:
@@ -46,6 +47,16 @@ class GestureCatcherRecognizer extends OneSequenceGestureRecognizer {
     required Set<PointerDeviceKind> pointerKindsToCatch,
     Object? debugOwner,
   }) : super(debugOwner: debugOwner, supportedDevices: pointerKindsToCatch);
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    if (supportedDevices != null && supportedDevices!.contains(event.kind)) {
+      startTrackingPointer(event.pointer);
+      resolve(GestureDisposition.accepted);
+    } else {
+      resolve(GestureDisposition.rejected);
+    }
+  }
 
   @override
   String get debugDescription => 'pan catcher';
