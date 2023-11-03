@@ -48,11 +48,6 @@ class GestureCatcherRecognizer extends OneSequenceGestureRecognizer {
   }) : super(debugOwner: debugOwner, supportedDevices: pointerKindsToCatch);
 
   @override
-  void rejectGesture(int pointer) {
-    acceptGesture(pointer);
-  }
-
-  @override
   String get debugDescription => 'pan catcher';
 
   @override
